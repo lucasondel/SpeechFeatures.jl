@@ -1,0 +1,7 @@
+name = "SpeechFeatures"
+uuid = "6f3487c4-5ca2-4050-bfeb-2cf56df92307"
+authors = ["Lucas Ondel <iondel@fit.vutbr.cz>"]
+version = "0.1.0"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
