@@ -30,13 +30,7 @@ function Base.iterate(it::FrameIterator, state::Int64=1)
     (it.signal[framestart:frameend], state + 1)
 end
 
-"""
-    frames(x, sr, t, Δt)
-
-Return an iterator over the frames of the signal `x`. Each frame will
-have `t` time span in second and `Δt` time shift in second as well.
-`sr` is the sampling rate of the `x` in Hertz.
-"""
+# Return an iterator over the frames of the signal `x`
 function frames(x::Vector{<:AbstractFloat}, sr::Real, t::Real, Δt::Real)
     FrameIterator(x, Int64(sr * t), Int64(sr * Δt))
 end
@@ -46,13 +40,11 @@ end
 struct FFTLengthAutoConfig end
 fftlen_auto = FFTLengthAutoConfig()
 
-"""
-    stft([T=Float64], x[, options])
+(::FFTLengthAutoConfig)(framelength) = Int(2^ceil(framelength))
 
-Extract the short-term Fourier transform of a signal.
-"""
+# Extract the short-term Fourier transform of a signal.
 function stft(T::Type, signal::Vector{<:Real};
-              fftlen::Union{Int64, FFTLengthAutoConfig} = fftlen_auto,
+              fftlen::Union{Integer, FFTLengthAutoConfig} = fftlen_auto,
               srate::Real = 16000,
               frameduration::Real = 0.025,
               framestep::Real = 0.01,
@@ -93,15 +85,21 @@ function stft(T::Type, signal::Vector{<:Real};
 
     if fftlen == fftlen_auto
         # Get the closest power of 2 of the frame length
-        fftlen = Int(2^ceil(log2(size(X, 1))))
+        fftlen = fftlen_auto(size(X, 1))
     end
 
     # Pad the frames with 0 to get the correct length FFT
     pX = PaddedView(0, X, (fftlen, size(X, 2)))
 
     # Compute (half of) the Fourier transform over the first dimension
-    rfft(pX, 1)
-end
+    S = rfft(pX, 1)
 
+    # If the length of FFT is even then we discard the value at the
+    # Nyquist frequency.
+    if fftlen % 2 == 0
+        S = S[1:end-1, :]
+    end
+    S
+end
 stft(signal::Vector{<:Real}; kwargs...) = stft(Float64, signal; kwargs...)
 
