@@ -3,7 +3,8 @@
 using PaddedViews
 using FFTW
 
-struct FrameIterator signal::Vector{<:AbstractFloat}
+struct FrameIterator
+    signal::Vector{<:Real}
     framelength::Int64
     hopsize::Int64
 end
@@ -25,7 +26,7 @@ function Base.iterate(it::FrameIterator, state::Int64=1)
 end
 
 # Return an iterator over the frames of the signal `x`
-function frames(x::Vector{<:AbstractFloat}, sr::Real, t::Real, Δt::Real)
+function frames(x::Vector{<:Real}, sr::Real, t::Real, Δt::Real)
     FrameIterator(x, Int64(sr * t), Int64(sr * Δt))
 end
 
@@ -40,10 +41,30 @@ function dctbases(T::Type, n::Integer, d::Integer)
     retval
 end
 
-# Generate the liftering function. `n` if the number of cepstral
+
+# Generate the liftering function. `n` is the number of cepstral
 # coefficients and `l` the liftering parameter.
 function lifter(T::Type, n::Integer, l::Real)
     t = Vector{T}(1:n)
-    1 .+ (l/2) * sin.(π * t / l)
+    retval = 1 .+ T(l/2) * sin.(π * t / l)
+    return retval
+end
+
+
+# Calculate the delta coefficient of a matrix of features
+function getdelta(X::Matrix{T}, deltawin::Integer = 2) where T <: AbstractFloat
+    D, N = size(X)
+    Δ = zeros(T, D, N)
+    norm = T(2. * sum(collect(1:deltawin) .^ 2))
+    for i = 1:N
+        for t = 1:deltawin
+            tm = i - t
+            tp = i + t
+            if tm < 1 tm = 1 end
+            if tp > N tp = N end
+            Δ[:, i] = (t * (X[:, tp] - X[:, tm])) / norm
+        end
+    end
+    return Δ
 end
 

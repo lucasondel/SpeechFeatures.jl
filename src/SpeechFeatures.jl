@@ -7,7 +7,10 @@ include("fbank.jl")
 export STFT
 export LogMagnitudeSpectrum
 export LogMelSpectrum
+export cepsenergy
+export rawenergy
 export MFCC
+export DeltaCoeffs
 
 
 #######################################################################
@@ -47,7 +50,7 @@ function STFT(;T = Float64,
 end
 
 
-function (stft::STFT)(signal::Vector{<:Real})
+function (stft::STFT)(signal::Vector{<:Real}; return_energy::Bool = false)
     # Copy the signal not to modify the original
     x = deepcopy(signal)
 
@@ -68,6 +71,7 @@ function (stft::STFT)(signal::Vector{<:Real})
     window = stft.windowfn(stft.T, size(X, 1)) .^ stft.windowpower
 
     # Iterate of the column, i.e. the frames of the signal
+    energy = zeros(stft.T, size(X, 2))
     for i in 1:size(X, 2)
         # Pre-emphasis
         px = vcat([X[1, i] ], X[1:end-1, i])
@@ -75,6 +79,9 @@ function (stft::STFT)(signal::Vector{<:Real})
 
         # Windowing
         X[:, i] .*= window
+
+        # Per-frame energy
+        energy[i] = log(sum(X[:, i] .^ 2))
     end
 
     fftlen = stft.fftlen
@@ -95,7 +102,11 @@ function (stft::STFT)(signal::Vector{<:Real})
         S = S[1:end-1, :]
     end
 
-    return S
+    if return_energy
+        return S, energy
+    else
+        return S
+    end
 end
 
 #######################################################################
@@ -168,12 +179,20 @@ end
 #######################################################################
 # MFCC
 
+struct RawEnergy end
+const rawenergy = RawEnergy()
+
+struct CepsEnergy end
+const cepsenergy = CepsEnergy()
+
 struct MFCC
     stft::STFT
     fbank::AbstractMatrix
     dct::AbstractMatrix
     lift::AbstractVector
     htkscaling::Bool
+    energy::Union{RawEnergy, CepsEnergy, Nothing}
+    energyfloor::Float64
 end
 
 function MFCC(;T = Float64,
@@ -191,7 +210,10 @@ function MFCC(;T = Float64,
               hifreq = 8000,
               nceps = 12,
               liftering = 22,
-              htkscaling)
+              htkscaling = true,
+              energy = cepsenergy,
+              energyfloor = 0.0
+             )
 
     stft = STFT(T, fftlen, srate, frameduration, framestep, removedc, dithering,
                 preemphasis, windowfn, windowpower)
@@ -204,14 +226,47 @@ function MFCC(;T = Float64,
     dct = dctbases(T, nceps, nfilters)
     lift = lifter(T, nceps, liftering)
 
-    MFCC(stft, F, dct, lift, htkscaling)
+    MFCC(stft, F, dct, lift, htkscaling, energy, energyfloor)
 end
 
 function (mfcc::MFCC)(x::Vector{<:Real})
-    S = mfcc.stft(x)
-    fea = mfcc.lift .* mfcc.dct * log.( mfcc.fbank' * abs.(S) .+ nextfloat(mfcc.stft.T(0.)))
-    if mfcc.htkscaling fea .*= sqrt(2. / size(mfcc.fbank, 2)) end
+    S, e = mfcc.stft(x, return_energy = true)
+    melspec = log.( mfcc.fbank' * abs.(S) .+ nextfloat(mfcc.stft.T(0.)))
+    fea = mfcc.lift .* mfcc.dct * melspec
+
+    mfnorm = sqrt(2. / size(mfcc.fbank, 2))
+    if mfcc.htkscaling fea .*= mfnorm end
+
+    if mfcc.energy ≠ nothing
+        if mfcc.energy == rawenergy
+            e = e[[CartesianIndex()], :]
+        else
+            println("cepsenergy")
+            e = sum(melspec, dims = 1)
+            if mfcc.htkscaling e .*= mfnorm end
+        end
+        floor = eltype(e)(mfcc.energyfloor)
+        e[ e .< floor] .= floor
+        fea = vcat(e, fea)
+    end
     return fea
+end
+
+#######################################################################
+# Delta features
+
+struct DeltaCoeffs
+    order::Integer
+    win::Integer
+end
+DeltaCoeffs(;order = 2, win = 2) = DeltaCoeffs(order, win)
+
+function (dcoeffs::DeltaCoeffs)(X::Matrix{T}) where T <: AbstractFloat
+    X_and_deltas = [X]
+    for order = 1:dcoeffs.order
+        push!(X_and_deltas, getdelta(X_and_deltas[end]))
+    end
+    vcat(X_and_deltas...)
 end
 
 end
