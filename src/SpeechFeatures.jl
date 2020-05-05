@@ -22,6 +22,14 @@ struct FFTLengthAutoConfig end
 fftlen_auto = FFTLengthAutoConfig()
 (::FFTLengthAutoConfig)(framelength) = Int(2^ceil(framelength))
 
+"""
+    struct STFT
+        fields
+        ...
+    end
+
+This is an example.
+"""
 struct STFT
     T::Type
     fftlen::Union{Integer, FFTLengthAutoConfig}
