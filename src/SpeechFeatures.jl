@@ -11,6 +11,7 @@ export cepsenergy
 export rawenergy
 export MFCC
 export DeltaCoeffs
+export fftlen_auto
 
 
 #######################################################################
@@ -20,7 +21,7 @@ export DeltaCoeffs
 # the length of the FFT.
 struct FFTLengthAutoConfig end
 fftlen_auto = FFTLengthAutoConfig()
-(::FFTLengthAutoConfig)(framelength) = Int(2^ceil(framelength))
+(::FFTLengthAutoConfig)(framelength) = Int(2^ceil(log2(framelength)))
 
 """
     struct STFT
