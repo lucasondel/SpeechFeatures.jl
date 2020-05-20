@@ -1,10 +1,5 @@
 using Documenter
 
-using Pkg
-Pkg.activate("../")
-using SpeechFeatures
-
-
 makedocs(
     sitename="SpeechFeatures",
     format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
