@@ -1,4 +1,4 @@
-# SpeechFeaturesDocumentation
+# SpeechFeatures Documentation
 
 [SpeechFeatures](https://github.com/BUTSpeechFIT/SpeechFeatures) is a
 [Julia](https://julialang.org/) package for extracting classical
