@@ -17,20 +17,12 @@ export fftlen_auto
 #######################################################################
 # Short Term Fourer Spectrum
 
-# Constant to indicate the stft function to automatically determine
+# Constant to tell the stft function to automatically determine
 # the length of the FFT.
 struct FFTLengthAutoConfig end
 fftlen_auto = FFTLengthAutoConfig()
 (::FFTLengthAutoConfig)(framelength) = Int(2^ceil(log2(framelength)))
 
-"""
-    struct STFT
-        fields
-        ...
-    end
-
-This is an example.
-"""
 struct STFT
     T::Type
     fftlen::Union{Integer, FFTLengthAutoConfig}
@@ -43,6 +35,7 @@ struct STFT
     windowfn::WindowFunction
     windowpower::Real
 end
+
 
 function STFT(;T = Float64,
               fftlen = fftlen_auto,
