@@ -1,5 +1,8 @@
 using Documenter
 
+push!(LOAD_PATH, "../src/")
+using SpeechFeatures
+
 makedocs(
     sitename="SpeechFeatures",
     format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
