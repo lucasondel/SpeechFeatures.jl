@@ -99,9 +99,3 @@ The `order` parameter is the order of the deltas coefficients, i.e.
 `order = 2` means that the first and second deltas (acceleration)
 coefficients will be computed.
 
-
-## Supported features
-
-## Compatibility with HTK
-
-## Compatibility with Kaldi
