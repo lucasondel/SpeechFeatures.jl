@@ -2,7 +2,7 @@
 
 A Julia package to extract speech features.
 
-See the full documentation here: [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://USER_NAME.github.io/PACKAGE_NAME.jl/dev)
+See the full documentation here: [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://butspeechfit.github.io/SpeechFeatures/dev)
 
 ## Installation
 
