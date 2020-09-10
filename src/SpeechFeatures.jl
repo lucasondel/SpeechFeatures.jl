@@ -13,6 +13,8 @@ export MFCC
 export DeltaCoeffs
 export fftlen_auto
 
+export frames
+
 
 #######################################################################
 # Short Term Fourer Spectrum
