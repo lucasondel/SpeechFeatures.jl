@@ -1,22 +1,16 @@
-# SpeechFeatures
+# ExpFamilyDistribution
 
-A Julia package to extract speech features.
+ExpFamilyDistributions is a Julia package for using distributions
+member of the Exponential family. the ExpFamilyDistributions package is
+mostly designed to build machine learning Bayesian models. For a
+general purpose statistical Julia package we recommend to use
+[Distributions.jl](https://github.com/JuliaStats/Distributions.jl).
 
-See the full documentation here: [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://butspeechfit.github.io/SpeechFeatures/dev)
+See the full documentation here: [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://butspeechfit.github.io/ExpFamilyDistributions/dev)
 
 ## Installation
 
 ```
-julia> Pkg.add("https://github.com/BUTSpeechFIT/SpeechFeatures")
+julia> Pkg.add("https://github.com/BUTSpeechFIT/ExpFamilyDistributions")
 ```
-
-## Extracting MFCC features
-
-```
-# x = ... # signal stored as a Vector
-julia> mfcc = MFCC(srate = 16000, nfilters = 26)
-julia> features = x |> mfcc
-```
-
-For a more details examples see the [example notebook](https://github.com/BUTSpeechFIT/SpeechFeatures/blob/master/examples/demo.ipynb).
 
