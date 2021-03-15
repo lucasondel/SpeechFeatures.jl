@@ -4,7 +4,7 @@ export hann
 export hamming
 export rectangular
 
-abstract type WindowFunction <: Function end
+abstract type WindowFunction{T<:Number} <: Function end
 
 struct HannWindow <: WindowFunction end
 struct HammingWindow <: WindowFunction end
