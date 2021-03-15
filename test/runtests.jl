@@ -35,6 +35,29 @@ doctest(SpeechFeatures)
     y1 = SpeechFeatures.delta(x)
     y2 = [5/10, 6/10, 5/10]
     @test all(y1 .≈ y2)
-    y1 = SpeechFeatures.delta(x)
+    y1 = SpeechFeatures.delta(Float32, x)
     @test eltype(y1) == Float32
 end
+
+@testset "Window functions" begin
+    N = 10
+
+    w1 = SpeechFeatures.RectangularWindow(N)
+    w2 = ones(N)
+    @test all(w1 .≈ w2)
+    w1 = SpeechFeatures.RectangularWindow(Float32, N)
+    @test eltype(w1) ==  Float32
+
+    w1 = SpeechFeatures.HannWindow(N)
+    w2 = 0.5 .* (1 .- cos.(2π .* Vector(0:N-1) ./ (N-1) ))
+    @test all(w1 .≈ w2)
+    w1 = SpeechFeatures.HannWindow(Float32, N)
+    @test eltype(w1) ==  Float32
+
+    w1 = SpeechFeatures.HammingWindow(N)
+    w2 = 0.54 .- 0.46 .* cos.(2π .* Vector(0:N-1) ./ (N-1) )
+    @test all(w1 .≈ w2)
+    w1 = SpeechFeatures.HammingWindow(Float32, N)
+    @test eltype(w1) ==  Float32
+end
+

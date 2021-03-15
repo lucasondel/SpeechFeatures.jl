@@ -8,8 +8,10 @@ using FFTW
 
 include("dsp.jl")
 
+include("windows.jl")
+
 #include("fbank.jl")
-#include("windows.jl")
+
 
 #######################################################################
 # Short Term Fouriere Spectral analysis
