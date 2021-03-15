@@ -10,8 +10,7 @@ include("dsp.jl")
 
 include("windows.jl")
 
-#include("fbank.jl")
-
+include("fbank.jl")
 
 #######################################################################
 # Short Term Fouriere Spectral analysis

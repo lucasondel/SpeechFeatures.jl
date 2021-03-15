@@ -1,14 +1,12 @@
 # Filter bank
 
-export FilterBank
-
-mel2freq(mel::Real) = 700. * (exp(mel / 1127.) - 1)
-
-freq2mel(freq::Real) = 1127. * (log(1 + (freq / 700.)))
+mel2freq(mel::Real) = 700 * (exp(mel / 1127) - 1)
+freq2mel(freq::Real) = 1127 * (log(1 + (freq / 700)))
 
 # Create a set of triangular filters
-function FilterBank(T::Type, n::Integer; srate::Real, fftlen::Integer,
+function FilterBank(T::Type, n::Int, srate::Real, fftlen::Int,
                     lofreq::Real, hifreq::Real)
+
     # Convert the cut-off frequencies into mel
     lomel = freq2mel(lofreq)
     himel = freq2mel(hifreq)
@@ -18,7 +16,7 @@ function FilterBank(T::Type, n::Integer; srate::Real, fftlen::Integer,
     freqcenters = mel2freq.(melcenters)
 
     # Now get the centers in terms of FFT bins
-    bincenters = Int64.(floor.( fftlen .* freqcenters ./ srate ))
+    bincenters = 1 .+ Int64.(floor.( fftlen .* freqcenters ./ srate ))
 
     # Allocate the matrix which will store the filters
     D = Int64(ceil(fftlen / 2))
@@ -39,5 +37,5 @@ function FilterBank(T::Type, n::Integer; srate::Real, fftlen::Integer,
     end
     F
 end
-FilterBank(n::Integer, args...) = FilterBank(Float64, n, args...)
+FilterBank(n, srate, fftlen, lo, hi) = FilterBank(Float64, n, srate, fftlen, lo, hi)
 

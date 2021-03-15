@@ -1,5 +1,6 @@
 
 using Documenter
+using PyCall
 using SpeechFeatures
 using Test
 
@@ -39,6 +40,9 @@ doctest(SpeechFeatures)
     @test eltype(y1) == Float32
 end
 
+#######################################################################
+# Window functions
+
 @testset "Window functions" begin
     N = 10
 
@@ -61,3 +65,48 @@ end
     @test eltype(w1) ==  Float32
 end
 
+#######################################################################
+# Filter bank
+
+py"""
+import numpy as np
+
+def create_filter(num, fft_len, lo_freq, hi_freq, samp_freq):
+    filter_num = num
+    filter_mat = np.zeros((fft_len // 2, filter_num))
+
+    mel2freq = lambda mel: 700.0 * (np.exp(mel / 1127.0) - 1)
+    freq2mel = lambda freq: 1127 * (np.log(1 + (freq / 700.0)))
+
+    lo_mel = freq2mel(lo_freq);
+    hi_mel = freq2mel(hi_freq);
+
+    mel_c = np.linspace(lo_mel, hi_mel, filter_num + 2)
+    freq_c = mel2freq(mel_c);
+
+    point_c = freq_c / float(samp_freq) * fft_len
+    point_c = np.floor(point_c).astype('int')
+
+    for f in range(filter_num):
+        d1 = point_c[f + 1] - point_c[f]
+        d2 = point_c[f + 2] - point_c[f + 1]
+
+        filter_mat[point_c[f]:point_c[f + 1] + 1, f] = np.linspace(0, 1, d1 + 1)
+        filter_mat[point_c[f + 1]:point_c[f + 2] + 1, f] = np.linspace(1, 0, d2 + 1)
+
+    return filter_mat
+"""
+
+@testset "FBANK" begin
+
+    m = 12.75
+    f = 100.12
+    @test SpeechFeatures.mel2freq(m) ≈ 700 * (exp(m / 1127) - 1)
+    @test typeof(SpeechFeatures.mel2freq(Float32(m))) == Float32
+    @test SpeechFeatures.freq2mel(f) ≈ 1127 * log(1 + (f / 700))
+    @test typeof(SpeechFeatures.freq2mel(Float32(f))) == Float32
+
+    fbank1 = SpeechFeatures.FilterBank(Float64, 26, 16000, 512, 80, 7600);
+    fbank2 = py"create_filter(26, 512, 80, 7600, 16000)"
+    @test all(fbank1 .≈ fbank2)
+end
