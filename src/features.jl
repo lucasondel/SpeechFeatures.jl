@@ -17,7 +17,7 @@ const PREEMPHASIS_DEFAULT       = 0.97
 const WINDOW_FUNCTION_DEFAULT   = HannWindow
 const WINDOW_POWER_DEFAULT      = 0.85
 
-# FABNK
+# FBANK
 const NFILTERS_DEFAULT          = 26
 const LOFREQ_DEFAULT            = 80
 const HIFREQ_DEFAULT            = 7600
@@ -54,7 +54,7 @@ function LogMagnitudeSpectrum(;
     windowpower = WINDOW_POWER_DEFAULT
 )
     pp = Preprocessor(removedc, dithering)
-    fx = FrameExtractor(srate, frameduration, framestep, preemphasis, windowfn,
+    fx = FrameExtractor(;srate, frameduration, framestep, preemphasis, windowfn,
                         windowpower)
     fft = FFT(siglen = Int(srate*frameduration))
     LogMagnitudeSpectrum(pp, fx, fft)

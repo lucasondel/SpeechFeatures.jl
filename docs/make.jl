@@ -1,18 +1,17 @@
-using Documenter
-
 push!(LOAD_PATH, "../src/")
+
+using Documenter
 using SpeechFeatures
+
+DocMeta.setdocmeta!(SpeechFeatures, :DocTestSetup,
+                    :(using SpeechFeatures), recursive = true)
 
 makedocs(
     sitename="SpeechFeatures",
     format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
     pages = [
         "Home" => "index.md",
-        "Manual" => Any[
-            "Installation" => "install.md",
-            "Features extraction" => "feaextract.md"
-        ],
-        "API" => "api.md"
+        "Extracting Features" => "feaextract.md"
     ]
 )
 

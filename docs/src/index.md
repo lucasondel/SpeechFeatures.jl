@@ -1,18 +1,23 @@
-# SpeechFeatures Documentation
+# SpeechFeatures
 
-[SpeechFeatures](https://github.com/BUTSpeechFIT/SpeechFeatures) is a
-[Julia](https://julialang.org/) package for extracting classical
-speech features from audio waveform.
+[SpeechFeatures](https://github.com/lucasondel/SpeechFeatures) is a
+Julia package for extracting acoustic features for speech technologies.
 
+## Authors
 
-## References
+* Lucas Ondel
 
-* Lucas Ondel, Brno University of technology. SpeechFeatures: a Julia
-  package for speech features extraction.
+## Installation
 
+The package can be installed with the Julia package manager. From the
+Julia REPL, type ] to enter the Pkg REPL mode and run:
+
+```julia
+pkg> add SpeechFeatures
+```
 
 ## Manual Outline
 
 ```@contents
-Pages = ["install.md", "feaextract.md"]
+Pages = ["feaextract.md"]
 ```
