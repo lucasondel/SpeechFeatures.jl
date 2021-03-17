@@ -16,6 +16,16 @@ last release.
 pkg> add SpeechFeatures
 ```
 
+## Example
+
+```julia
+julia> # x = ... extracted signal
+julia> lms = LogMelSpectrum()
+julia> x |> lms
+```
+
+![](docs/src/images/lms.svg)
+
 Have a look at the [documentation](https://lucasondel.github.io/SpeechFeatures/stable/)
 to get started.
 
