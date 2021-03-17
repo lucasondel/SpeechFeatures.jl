@@ -5,7 +5,7 @@ for speech technologies.
 
 | **Documentation**  | **Test Status**   |
 |:------------------:|:-----------------:|
-| [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://lucasondel.github.io/SpeechFeatures/stable) [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://lucasondel.github.io/SpeechFeatures/dev) | ![](https://github.com/lucasondel/SpeechFeatures/workflows/Test/badge.svg) |
+| [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://lucasondel.github.io/SpeechFeatures.jl/stable) [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://lucasondel.github.io/SpeechFeatures.jl/dev) | ![](https://github.com/lucasondel/SpeechFeatures.jl/workflows/Test/badge.svg) |
 
 See the [changelog file](CHANGELOG.md) to check what's new since the
 last release.
@@ -29,7 +29,7 @@ julia> x |> lms
 
 ![](docs/src/images/lms.svg)
 
-Have a look at the [documentation](https://lucasondel.github.io/SpeechFeatures/stable/)
+Have a look at the [documentation](https://lucasondel.github.io/SpeechFeatures.jl/stable/) or the [example Jupyter notebook](demo.ipynb)
 to get started.
 
 ## Authors
