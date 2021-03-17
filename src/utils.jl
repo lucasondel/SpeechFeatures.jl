@@ -1,4 +1,4 @@
-# Basic DSP operations.
+# Basic operations.
 
 #######################################################################
 # DCT bases for the cosine transform
@@ -39,4 +39,39 @@ function delta(T::Type, x::AbstractVector, deltawin::Int = 2)
     y
 end
 delta(x; deltawin = 2) = delta(Float64, x, deltawin)
+
+#######################################################################
+# Signal preprocessing (before the the spectral analysis)
+
+struct Preprocessor
+    removedc::Bool
+    dithering::Float64
+end
+Preprocessor(;removedc = true, dithering = 0.0) = Preprocessor(removedc, dithering)
+
+function (preproc::Preprocessor)(x::AbstractVector)
+    N = length(x)
+    x̂ = x .+ randn(N) .* preproc.dithering
+    if preproc.removedc x̂ .-= sum(x̂) / N end
+    x̂
+end
+
+#######################################################################
+# Short Term Fourier Spectrum.
+
+struct FFT
+    fftlen::Int64
+end
+FFT(; siglen) = FFT(Int( 2^ceil(log2(siglen))))
+
+Base.broadcastable(trans::FFT) = Ref(trans)
+
+function (transform::FFT)(x::AbstractVector)
+    pX = PaddedView(0, x, (transform.fftlen,))
+    S = rfft(pX)
+
+    # If the length of FFT is even then we discard the value at the
+    # Nyquist frequency.
+    if transform.fftlen % 2 == 0 S = S[1:end-1] end
+end
 
