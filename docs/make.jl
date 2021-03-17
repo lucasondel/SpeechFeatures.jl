@@ -16,6 +16,6 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/BUTSpeechFIT/SpeechFeatures.git",
+    repo = "github.com/lucasondel/SpeechFeatures.git",
 )
 
