@@ -4,23 +4,25 @@ using PaddedViews
 using FFTW
 
 #######################################################################
-# Utilities
+# Internal API
 
 include("dsp.jl")
-
 include("windows.jl")
-
 include("fbank.jl")
+include("preprocess.jl")
+include("framing.jl")
+include("stft.jl")
 
 #######################################################################
-# Short Term Fouriere Spectral analysis
+# Features
 
-#export STFT
+export DeltaCoeffs
+export LogMagnitudeSpectrum
+export LogMelSpectrum
+export MFCC
+export MeanNorm
 
-#include("stft.jl")
-
-#######################################################################
-# Log Mel spectrum
+include("features.jl")
 
 #struct LogMelSpectrum
 #    stft::STFT

@@ -106,7 +106,7 @@ def create_filter(num, fft_len, lo_freq, hi_freq, samp_freq):
     @test SpeechFeatures.freq2mel(f) ≈ 1127 * log(1 + (f / 700))
     @test typeof(SpeechFeatures.freq2mel(Float32(f))) == Float32
 
-    fbank1 = SpeechFeatures.FilterBank(Float64, 26, 16000, 512, 80, 7600);
+    fbank1 = SpeechFeatures.FilterBank(26, 16000, 512, 80, 7600);
     fbank2 = py"create_filter(26, 512, 80, 7600, 16000)"
     @test all(fbank1 .≈ fbank2)
 end

@@ -4,8 +4,8 @@ mel2freq(mel::Real) = 700 * (exp(mel / 1127) - 1)
 freq2mel(freq::Real) = 1127 * (log(1 + (freq / 700)))
 
 # Create a set of triangular filters
-function FilterBank(T::Type, n::Int, srate::Real, fftlen::Int,
-                    lofreq::Real, hifreq::Real)
+function FilterBank(n::Int; srate::Real = 16000, fftlen::Int = 512,
+                    lofreq::Real = 80, hifreq::Real = 7600)
 
     # Convert the cut-off frequencies into mel
     lomel = freq2mel(lofreq)
@@ -20,7 +20,7 @@ function FilterBank(T::Type, n::Int, srate::Real, fftlen::Int,
 
     # Allocate the matrix which will store the filters
     D = Int64(ceil(fftlen / 2))
-    F = zeros(T, D, n)
+    F = zeros(D, n)
 
     # Construct the "triangle"
     for f = 1:n
@@ -37,5 +37,4 @@ function FilterBank(T::Type, n::Int, srate::Real, fftlen::Int,
     end
     F
 end
-FilterBank(n, srate, fftlen, lo, hi) = FilterBank(Float64, n, srate, fftlen, lo, hi)
 
