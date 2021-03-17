@@ -12,6 +12,9 @@ last release.
 
 ## Installation
 
+The package can be installed with the Julia package manager. From the
+Julia REPL, type ] to enter the Pkg REPL mode and run:
+
 ```
 pkg> add SpeechFeatures
 ```
