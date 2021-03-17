@@ -105,7 +105,7 @@ Here is the list of possible options for each extractor
 | `nceps` | `12` | MFCC | Number of cepstral coefficients. |
 | `liftering` | `22` | MFCC | Liftering coefficient. |
 
-## Deltas and acceleration coefficients and mean normalization
+## Deltas and mean normalization
 
 The deltas and acceleration coefficients (i.e. "double deltas") can
 be computed by chaining the features extraction with the
