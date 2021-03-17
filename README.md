@@ -29,7 +29,7 @@ julia> x |> lms
 
 ![](docs/src/images/lms.svg)
 
-Have a look at the [documentation](https://lucasondel.github.io/SpeechFeatures/stable/)
+Have a look at the [documentation](https://lucasondel.github.io/SpeechFeatures/stable/) or the [example Jupyter notebook](demo.ipynb)
 to get started.
 
 ## Authors
