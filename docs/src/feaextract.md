@@ -81,10 +81,7 @@ julia> mfcc = MFCC()
 and then, we extract and plot the features from our TIMIT sample:
 ```julia
 julia> fea = x |> mfcc
-julia> heatmap(range(0, length(x) / srate, length = size(fea, 2)),
-               1:size(fea, 1), fea, xlabel = "time (s)", c = :viridis)
 ```
-![](images/mfcc.svg)
 
 Here is the list of possible options for each extractor
 
