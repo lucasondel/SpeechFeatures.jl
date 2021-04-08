@@ -6,7 +6,7 @@ technologies.
 
 ## Authors
 
-* Lucas Ondel
+* Lucas Ondel ([website](https://lucasondel.github.io/)
 
 ## Installation
 
