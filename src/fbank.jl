@@ -1,5 +1,3 @@
-# Filter bank
-
 mel2freq(mel::Real) = 700 * (exp(mel / 1127) - 1)
 freq2mel(freq::Real) = 1127 * (log(1 + (freq / 700)))
 

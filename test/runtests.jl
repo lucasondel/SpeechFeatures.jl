@@ -32,12 +32,11 @@ doctest(SpeechFeatures)
     lifter1 = SpeechFeatures.lifter(Float32, 2, 3)
     @test eltype(lifter1) == Float32
 
-    x = [1, 2, 3]
-    y1 = SpeechFeatures.delta(x)
-    y2 = [5/10, 6/10, 5/10]
-    @test all(y1 .≈ y2)
-    y1 = SpeechFeatures.delta(Float32, x)
-    @test eltype(y1) == Float32
+    X = Float64[1 2 3; 2 3 4]
+    Y1 = SpeechFeatures.delta(X)
+    println(Y1)
+    Y2 = [5/10 6/10 5/10; 5/10 6/10 5/10]
+    @test all(Y1 .≈ Y2)
 end
 
 #######################################################################

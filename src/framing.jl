@@ -1,10 +1,4 @@
-# Framing the signal
-# Lucas Ondel, 2021
-
 _framelen(srate, fduration) = Int64(srate * fduration)
-
-#######################################################################
-# Frame iterator
 
 struct FrameIterator{T<:AbstractVector}
     signal::T
@@ -33,9 +27,6 @@ function frames(x::AbstractVector, sr::Real, t::Real, Δt::Real)
     FrameIterator(x, _framelen(sr, t), Int64(sr * Δt))
 end
 
-#######################################################################
-# Frame extractor (wrap the frame iterator for the user)
-
 struct FrameExtractor
     srate::Int64
     frameduration::Float64
@@ -53,13 +44,14 @@ function FrameExtractor(; srate = 16000, frameduration = 0.025, framestep = 0.01
 end
 
 function (fx::FrameExtractor)(x::AbstractVector)
+    itframes = frames(x, fx.srate, fx.frameduration, fx.framestep)
+    N = length(itframes)
     W = _framelen(fx.srate, fx.frameduration)
     window = fx.windowfn(Float64, W) .^ fx.windowpower
-    retval = []
-    for frame in frames(x, fx.srate, fx.frameduration, fx.framestep)
-        frame .-= vcat([frame[1] ], frame[1:end-1]) * fx.preemphasis
-        frame .*= window
-        push!(retval, frame)
+    retval = Matrix{Float64}(undef, W, N)
+    for (n,frame) in enumerate(itframes)
+        h = vcat(frame[1], frame[1:end-1]) * fx.preemphasis
+        retval[:, n] .= window .* (frame .- h)
     end
     retval
 end

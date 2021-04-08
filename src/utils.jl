@@ -1,8 +1,3 @@
-# Basic operations.
-
-#######################################################################
-# DCT bases for the cosine transform
-
 # Generate the DCT bases, `d` is the number of samples per base
 # and `n` the number of bases.
 function dctbases(T::Type, N::Int, D::Int)
@@ -15,33 +10,23 @@ function dctbases(T::Type, N::Int, D::Int)
 end
 dctbases(N, D) = dctbases(Float64, N, D)
 
-#######################################################################
-# Liftering
-
 function lifter(T::Type, N::Int, L::Real)
     t = Vector{T}(1:N)
     1 .+ T(L/2) * sin.(π * t / L)
 end
 lifter(N, L) = lifter(Float64, N, L)
 
-#######################################################################
-# delta coefficient of a matrix of features
-
-function delta(T::Type, x::AbstractVector, deltawin::Int = 2)
-    N = length(x)
-    y = zeros(T, N)
-    norm = 2*sum(collect(1:deltawin).^2)
+function delta(X::AbstractMatrix{T}, deltawin::Int = 2) where T
+    D, N = size(X)
+    Δ = zeros(T, D, N)
+    norm = T(2 * sum(collect(1:deltawin).^2))
     for n in 1:N
         for θ in 1:deltawin
-            y[n] += (θ * (x[min(N, n+θ)] - x[max(1, n-θ)])) / norm
+            Δ[:, n] += (θ * (X[:,min(N, n+θ)] - X[:,max(1,n-θ)])) / norm
         end
     end
-    y
+    Δ
 end
-delta(x; deltawin = 2) = delta(Float64, x, deltawin)
-
-#######################################################################
-# Signal preprocessing (before the the spectral analysis)
 
 struct Preprocessor
     removedc::Bool
@@ -56,22 +41,17 @@ function (preproc::Preprocessor)(x::AbstractVector)
     x̂
 end
 
-#######################################################################
-# Short Term Fourier Spectrum.
-
 struct FFT
     fftlen::Int64
 end
 FFT(; siglen) = FFT(Int( 2^ceil(log2(siglen))))
 
-Base.broadcastable(trans::FFT) = Ref(trans)
-
-function (transform::FFT)(x::AbstractVector)
-    pX = PaddedView(0, x, (transform.fftlen,))
-    S = rfft(pX)
+function (transform::FFT)(X::AbstractMatrix)
+    pX = PaddedView(0, X, (transform.fftlen, size(X,2)))
+    S = rfft(pX, 1)
 
     # If the length of FFT is even then we discard the value at the
     # Nyquist frequency.
-    if transform.fftlen % 2 == 0 S = S[1:end-1] end
+    if transform.fftlen % 2 == 0 S = S[1:end-1, :] end
 end
 

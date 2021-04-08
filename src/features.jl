@@ -1,7 +1,3 @@
-# Speech features
-# Lucas Ondel, 2021
-#
-
 #######################################################################
 # Default settings
 
@@ -35,7 +31,6 @@ const DELTA_WIN_DEFAULT         = 2
 const MEAN_NORM_DEFAULT         = true
 
 #######################################################################
-# Log Magnitude spectrum
 
 struct LogMagnitudeSpectrum
     pp::Preprocessor
@@ -61,11 +56,8 @@ function LogMagnitudeSpectrum(;
 end
 
 function (lms::LogMagnitudeSpectrum)(x::AbstractVector)
-    x |> lms.pp |> lms.fx .|>  lms.fft .|> f -> abs.(f) .|> f -> log.(f)
+    x |> lms.pp |> lms.fx |>  lms.fft .|> abs .|> log
 end
-
-#######################################################################
-# Log Mel spectrum
 
 struct LogMelSpectrum{T<:AbstractMatrix}
     pp::Preprocessor
@@ -96,11 +88,8 @@ function LogMelSpectrum(;
 end
 
 function (lms::LogMelSpectrum)(x::AbstractVector)
-    [lms.fbank'] .* (x |> lms.pp |> lms.fx .|>  lms.fft .|> f -> abs.(f)) .|> f -> log.(f)
+    ( lms.fbank' * (x |> lms.pp |> lms.fx |>  lms.fft .|> abs) ) .|> log
 end
-
-#######################################################################
-# MFCC
 
 struct MFCC{T<:AbstractMatrix,F<:AbstractMatrix,G<:AbstractVector}
     pp::Preprocessor
@@ -140,24 +129,21 @@ end
 
 function (mfcc::MFCC)(x::AbstractVector)
     frs = x |> mfcc.pp |> mfcc.fx
-    melspec = [mfcc.fbank'] .* (frs .|>  mfcc.fft .|> f -> abs.(f)) .|> f -> log.(f)
-    melceps = [mfcc.dct] .* melspec
+    melspec = (mfcc.fbank' * (frs |>  mfcc.fft .|> abs) ) .|> log
+    melceps = mfcc.dct * melspec
 
-    # This normalization constant was employed in HTK and compress the
+    # This normalization constant was used in HTK, it compresses the
     # dynamic range of the features.
     mfnorm = sqrt(2. / size(mfcc.fbank, 2))
 
-    lift_melceps = [f .* mfcc.lifter .* mfnorm for f in melceps]
+    lift_melceps = (mfcc.lifter * mfnorm) .* melceps
 
     if mfcc.addenergy
-        return [vcat(log(sum(f .^ 2)), fm) for (f, fm) in zip(frs, lift_melceps)]
+        return vcat(log.(sum((frs .^2), dims = 1)), lift_melceps)
     end
 
     lift_melceps
 end
-
-#######################################################################
-# Delta
 
 struct DeltaCoeffs
     order::Integer
@@ -168,23 +154,17 @@ function DeltaCoeffs(;order = DELTA_ORDER_DEFAULT, deltawin = DELTA_WIN_DEFAULT)
     DeltaCoeffs(order, deltawin)
 end
 
-function (dc::DeltaCoeffs)(X::AbstractVector{<:AbstractVector})
-    D = length(X[1])
+function (dc::DeltaCoeffs)(X::AbstractMatrix)
     X_and_deltas = [X]
     for o in 1:dc.order
-        Δ = hcat([delta(getindex.(X_and_deltas[end], d), deltawin = dc.win) for d in 1:D]...)
-        push!(X_and_deltas, collect(eachrow(Δ)))
+        push!(X_and_deltas, delta(X_and_deltas[end]))
     end
-    [vcat(f...) for f in zip(X_and_deltas...)]
+    vcat(X_and_deltas...)
 end
-
-#######################################################################
-# Utterance mean normalization
 
 struct MeanNorm end
 
-function (::MeanNorm)(X::AbstractVector{<:AbstractVector})
-    μ = sum(X) ./ length(X)
-    X .- [μ]
+function (::MeanNorm)(X::AbstractMatrix)
+    X .- sum(X, dims = 2) ./ size(X, 2)
 end
 
