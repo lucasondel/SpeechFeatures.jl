@@ -1,6 +1,6 @@
-# SpeechFeatures
+# SpeechFeatures.jl
 
-SpeechFeatures is a Julia package for extracting acoustic features
+SpeechFeatures.jl is a Julia package for extracting acoustic features
 for speech technologies.
 
 | **Documentation**  | **Test Status**   |
@@ -34,5 +34,5 @@ to get started.
 
 ## Authors
 
-Lucas Ondel 2020
+Lucas Ondel 2021
 
