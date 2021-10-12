@@ -37,7 +37,7 @@ MFCCs = mfcc(mS; nceps=13) # Standard MFCCs.
 MFCCs_Δ_ΔΔ = add_deltas(MFCCs; order=2) # MFCCs + 1st and 2nd order derivatives.
 ```
 
-Have a look at the [examples](https://github.com/lucasondel/tree/master/SpeechFeatures.jl/examples)
+Have a look at the [examples](https://github.com/lucasondel/SpeechFeatures.jl/tree/master/examples)
 to get started.
 
 ## Author
