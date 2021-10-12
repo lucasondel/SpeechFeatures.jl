@@ -1,7 +1,7 @@
 name = "SpeechFeatures"
 uuid = "6f3487c4-5ca2-4050-bfeb-2cf56df92307"
 authors = ["Lucas Ondel <lucas.ondel@gmail.com"]
-version = "0.2.0"
+version = "0.3.0"
 
 [deps]
 FFTW = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
