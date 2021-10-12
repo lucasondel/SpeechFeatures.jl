@@ -1,11 +1,11 @@
 # SpeechFeatures.jl
 
-SpeechFeatures.jl is a Julia package for extracting acoustic features
+*SpeechFeatures* is a Julia package for extracting acoustic features
 for speech technologies.
 
-| **Documentation**  | **Test Status**   |
-|:------------------:|:-----------------:|
-| [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://lucasondel.github.io/SpeechFeatures.jl/stable) [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://lucasondel.github.io/SpeechFeatures.jl/dev) | ![](https://github.com/lucasondel/SpeechFeatures.jl/workflows/Test/badge.svg) |
+| **Test Status**   |
+|:-----------------:|
+| ![](https://github.com/lucasondel/SpeechFeatures.jl/workflows/Test/badge.svg) |
 
 See the [changelog file](CHANGELOG.md) to check what's new since the
 last release.
@@ -19,20 +19,28 @@ Julia REPL, type ] to enter the Pkg REPL mode and run:
 pkg> add SpeechFeatures
 ```
 
-## Example
+## Quick start
+
+To get the [MFCC](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum)
+features:
 
 ```julia
-julia> # x = ... extracted signal
-julia> lms = LogMelSpectrum()
-julia> x |> lms
+using SpeechFeatures
+
+# x = ... extracted signal
+# fs = ... sampling frequency
+
+S, fftlen = stft(x; srate=fs) # Complex short-term spectrum.
+fbank = FilterBank(26; fftlen=fftlen)
+mS = fbank * abs.(S) # Magnitude of the Mel-spectrum.
+MFCCs = mfcc(mS; nceps=13) # Standard MFCCs.
+MFCCs_Δ_ΔΔ = add_deltas(MFCCs; order=2) # MFCCs + 1st and 2nd order derivatives.
 ```
 
-![](docs/src/images/lms.svg)
-
-Have a look at the [documentation](https://lucasondel.github.io/SpeechFeatures.jl/stable/) or the [example Jupyter notebook](demo.ipynb)
+Have a look at the [examples](https://github.com/lucasondel/tree/master/SpeechFeatures.jl/examples)
 to get started.
 
-## Authors
+## Author
 
-Lucas Ondel 2021
+[Lucas Ondel](https://lucasondel.github.io), [LISN](https://www.lisn.upsaclay.fr/) 2021
 
