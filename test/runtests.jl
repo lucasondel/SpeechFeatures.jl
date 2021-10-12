@@ -14,23 +14,14 @@ doctest(SpeechFeatures)
 
 @testset "Utils" begin
     x = Vector(1:10)
-    f1 = collect(SpeechFeatures.frames(x, 10, 0.3, 0.2))
+    f1 = collect(SpeechFeatures.eachframe(x; srate=10, frameduration=0.3, framestep=0.2))
     f2 = [[1, 2, 3], [3, 4, 5], [5, 6, 7], [7, 8, 9]]
     @test all(f1 .== f2)
 
-    DCT1 = SpeechFeatures.dctbases(2, 3)
-    DCT2 = [8.66025404e-01 6.12323400e-17 -8.66025404e-01;
-            0.5            -1.0            0.5]
-    @test all(DCT1 .≈ DCT2)
-    DCT1 = SpeechFeatures.dctbases(Float32, 2, 3)
-    @test eltype(DCT1) == Float32
-
-    lifter1 = SpeechFeatures.lifter(10, 22)
+    lifter1 = SpeechFeatures.makelifter(10, 22)
     lifter2 = [2.56546322,  4.09905813,  5.56956514,  6.94704899,  8.20346807,
                9.31324532, 10.25378886, 11.00595195, 11.55442271, 11.88803586]
     @test all(lifter1 .≈ lifter2)
-    lifter1 = SpeechFeatures.lifter(Float32, 2, 3)
-    @test eltype(lifter1) == Float32
 
     X = Float64[1 2 3; 2 3 4]
     Y1 = SpeechFeatures.delta(X)
@@ -108,5 +99,5 @@ def create_filter(num, fft_len, lo_freq, hi_freq, samp_freq):
     fbank1 = SpeechFeatures.FilterBank(26; srate = 16000, fftlen = 512,
                                        lofreq = 80, hifreq = 7600);
     fbank2 = py"create_filter(26, 512, 80, 7600, 16000)"
-    @test all(fbank1 .≈ fbank2)
+    @test all(fbank1 .≈ fbank2')
 end
