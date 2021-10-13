@@ -1,5 +1,10 @@
 # Releases
 
+## 0.3.1
+* Renamed `FilterBank` to `filterbank` to homogenize the user interface.
+  The previous `FilterBank` function is still exported but is mark
+  as deprecated.
+
 ## 0.3.0
 * Simplfied the code and refactored the user interface.
 * Added Pluto notebook examples.
