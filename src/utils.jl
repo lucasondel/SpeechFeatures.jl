@@ -13,15 +13,13 @@ end
 Pre-emphasis
 ======================================================================#
 
-function preemphasis(x; k=0.97)
-    y = similar(x)
-	y[1] = x[1]
+function preemphasis!(x; k=0.97)
 	prev = x[1]
 	for i in 2:length(x)
-		y[i] = x[i] - k*prev
-		prev = x[i]
+        prev2 = x[i]
+		x[i] = x[i] - k*prev
+		prev = prev2
 	end
-	y
 end
 
 #======================================================================

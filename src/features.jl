@@ -14,9 +14,9 @@ function stft(x_in; srate=16000, dithering=0, removedc=true, frameduration=0.025
     x = x_in .+ randn(length(x_in)) * dithering
     x .-= sum(x) / length(x)
     X = hcat(eachframe(x; srate, frameduration, framestep)...)
-    X = hcat(map(preemphasis, eachcol(X))...)
+    foreach(preemphasis!, eachcol(X))
     window = windowfn(Int64(srate*frameduration)) .^ windowexp
-    X = hcat(map(x -> x .* window, eachcol(X))...)
+    foreach(x -> x .*= window, eachcol(X))
 
     fftlen = Int64(2^ceil(log2(size(X, 1))))
     pX = PaddedView(0, X, (fftlen, size(X, 2)))
@@ -33,7 +33,7 @@ function mfcc(mS; nceps=13, liftering=22)
     C = dct(log.(mS), 1)[1:nceps,:]
     if liftering > 0
         lifter = makelifter(size(C,1), liftering)
-        C = hcat(map(x -> x .* lifter, eachcol(C))...)
+        foreach(x -> x .*= lifter, eachcol(C))
     end
     C
 end
