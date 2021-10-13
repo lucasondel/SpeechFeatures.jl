@@ -6,9 +6,6 @@ using InteractiveUtils
 
 # ╔═╡ 3d4495cd-3107-4855-8a57-b4154f7af653
 begin 
-	using Pkg
-	Pkg.activate("/home/ondel/Repositories/SpeechFeatures.jl")
-	Pkg.instantiate()
 	using SpeechFeatures
 	using WAV
 	using Plots
@@ -56,7 +53,7 @@ heatmap(log.(abs.(S)))
 md"""
 ## Mel-spectrum
 
-To the the mel-spectrum we create the filter bank and apply on the stft.
+To get the mel-spectrum we create the filter bank and apply on the stft.
 """
 
 # ╔═╡ fe42604a-b264-43ec-abab-135fd13c326c
