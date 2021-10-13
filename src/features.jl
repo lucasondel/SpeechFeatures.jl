@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: MIT
 
-
 """
     stft(x, fs; kwargs...) -> S, fftlen
 

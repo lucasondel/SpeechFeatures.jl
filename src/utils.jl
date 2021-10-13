@@ -88,7 +88,7 @@ mel2freq(mel::Real) = 700 * (exp(mel / 1127) - 1)
 freq2mel(freq::Real) = 1127 * (log(1 + (freq / 700)))
 
 # Create a set of triangular filters
-function FilterBank(n::Int; srate::Real = 16000, fftlen::Int = 512,
+function filterbank(n::Int; srate::Real = 16000, fftlen::Int = 512,
                     lofreq::Real = 80, hifreq::Real = 7600)
 
     # Convert the cut-off frequencies into mel
@@ -121,4 +121,6 @@ function FilterBank(n::Int; srate::Real = 16000, fftlen::Int = 512,
     end
     F
 end
+
+@deprecate FilterBank(args...; kwargs...) filterbank(args...; kwargs...)
 

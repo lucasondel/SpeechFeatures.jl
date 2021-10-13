@@ -25,7 +25,6 @@ doctest(SpeechFeatures)
 
     X = Float64[1 2 3; 2 3 4]
     Y1 = SpeechFeatures.delta(X)
-    println(Y1)
     Y2 = [5/10 6/10 5/10; 5/10 6/10 5/10]
     @test all(Y1 .≈ Y2)
 end
