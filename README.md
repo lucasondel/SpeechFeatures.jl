@@ -31,7 +31,7 @@ using SpeechFeatures
 # fs = ... sampling frequency
 
 S, fftlen = stft(x; srate=fs) # Complex short-term spectrum.
-fbank = FilterBank(26; fftlen=fftlen)
+fbank = filterbank(26; fftlen=fftlen)
 mS = fbank * abs.(S) # Magnitude of the Mel-spectrum.
 MFCCs = mfcc(mS; nceps=13) # Standard MFCCs.
 MFCCs_Δ_ΔΔ = add_deltas(MFCCs; order=2) # MFCCs + 1st and 2nd order derivatives.

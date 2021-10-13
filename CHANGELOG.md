@@ -1,5 +1,9 @@
 # Releases
 
+## 0.3.2
+* Avoid GC pressure by doing most of the operations in `stft` and
+  `mfcc` in-place.
+
 ## 0.3.1
 * Renamed `FilterBank` to `filterbank` to homogenize the user interface.
   The previous `FilterBank` function is still exported but is mark
